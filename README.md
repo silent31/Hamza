@@ -1,6 +1,6 @@
-# Sagor-Bot-V2
+# Goat-Bot-V2
 
-**Sagor-Bot-V2** is a Facebook Messenger chatbot that runs with the help of your **Facebook account's appstate (cookies)**. This bot listens to your messages in Messenger and handles multiple useful commands.
+**Goat Bot-V2** is a Facebook Messenger chatbot that runs with the help of your **Facebook account's appstate (cookies)**. This bot listens to your messages in Messenger and handles multiple useful commands.
 
 # BOT RUNNING WORKFLOWS
 ```
@@ -43,7 +43,7 @@ jobs:
 ## 🧰 Requirements
 
 - **Node.js version 18 or above (18+)**
-- Facebook `appstate.json` file (login cookie JSON)
+- Facebook `account.txt` file (login cookie JSON)
 
 ## ⚙️ Installation
 
@@ -51,7 +51,7 @@ jobs:
 
 ```bash
 git clone https://github.com/MDAMINULSARDAR/Goat-Bot-V2.git
-cd mirai_Bot_v
+cd Goat-Bot-V2
 ```
 
 ### 2. Dependencies Installed
@@ -113,4 +113,4 @@ aminul-new-fca
 
 ## 👨‍💻 Author
 
-Developed with ❤️ by [MD.AMINUL SARDARttps://github.com/MDAMINULSARDAR)
+Developed with ❤️ by [MD.AMINUL SARDAR]https://github.com/MDAMINULSARDAR)
