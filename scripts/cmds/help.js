@@ -3,10 +3,12 @@ const path = require("path");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
 
+const doNotDelete = "[ 🐐 | Goat Bot V2 ]";
+
 module.exports = {
 	config: {
 		name: "help",
-		version: "2.5",
+		version: "2.6",
 		author: "Aminul Sardar (Decorated from NTKhang)",
 		countDown: 5,
 		role: 0,
@@ -84,58 +86,61 @@ module.exports = {
 		const threadData = await threadsData.get(threadID);
 		const prefix = getPrefix(threadID);
 
-		// If user requests command details
-		if (args[0]) {
-			const cmdName = args[0].toLowerCase();
-			let command = commands.get(cmdName) || commands.get(aliases.get(cmdName));
-			if (!command)
-				return message.reply(getLang("commandNotFound", args[0]));
+		// Check if args[0] is a page number
+		const pageNum = parseInt(args[0]);
+		const isPage = !isNaN(pageNum);
 
-			const cfg = command.config;
-			const usage = (cfg.guide?.en || cfg.guide || "")
-				.replace(/\{pn\}/g, prefix + cfg.name);
+		if (!args[0] || isPage) {
+			// Show command list page
+			let arrayInfo = [];
+			for (const [name, value] of commands) {
+				if (value.config.role > 1 && role < value.config.role) continue;
+				arrayInfo.push(name);
+			}
+			arrayInfo.sort();
 
-			const roleText =
-				cfg.role == 0 ? "0 (All users)" :
-				cfg.role == 1 ? "1 (Group admin)" :
-				"2 (Bot admin)";
+			const page = isPage ? pageNum : 1;
+			const numberOfOnePage = 20; // 20 commands per page
+			const totalPage = Math.ceil(arrayInfo.length / numberOfOnePage);
 
-			return message.reply(
-				getLang("commandInfo",
-					cfg.name,
-					cfg.description?.en || cfg.description || "No description",
-					roleText,
-					cfg.version || "1.0",
-					cfg.author || "Unknown",
-					usage || "No usage guide"
-				)
-			);
+			if (page < 1 || page > totalPage)
+				return message.reply(getLang("pageNotFound", page));
+
+			const start = (page - 1) * numberOfOnePage;
+			const end = start + numberOfOnePage;
+			const listPage = arrayInfo.slice(start, end);
+
+			let textList = "";
+			listPage.forEach((cmd, index) => {
+				textList += `│ ▪ ${start + index + 1} ➩ ${cmd}\n`;
+			});
+
+			return message.reply(getLang("helpList", page, totalPage, textList));
 		}
 
-		// Else: list commands
-		let arrayInfo = [];
-		for (const [name, value] of commands) {
-			if (value.config.role > 1 && role < value.config.role) continue;
-			arrayInfo.push(name);
-		}
-		arrayInfo.sort();
+		// Else → show command details
+		const cmdName = args[0].toLowerCase();
+		let command = commands.get(cmdName) || commands.get(aliases.get(cmdName));
+		if (!command)
+			return message.reply(getLang("commandNotFound", args[0]));
 
-		// Pagination
-		const page = parseInt(args[0]) || 1;
-		const numberOfOnePage = 15;
-		const totalPage = Math.ceil(arrayInfo.length / numberOfOnePage);
-		if (page < 1 || page > totalPage)
-			return message.reply(getLang("pageNotFound", page));
+		const cfg = command.config;
+		const usage = (cfg.guide?.en || cfg.guide || "").replace(/\{pn\}/g, prefix + cfg.name);
 
-		const start = (page - 1) * numberOfOnePage;
-		const end = start + numberOfOnePage;
-		const listPage = arrayInfo.slice(start, end);
+		const roleText =
+			cfg.role == 0 ? "0 (All users)" :
+			cfg.role == 1 ? "1 (Group admin)" :
+			"2 (Bot admin)";
 
-		let textList = "";
-		listPage.forEach((cmd, index) => {
-			textList += `│ ▪ ${start + index + 1} ➩ ${cmd}\n`;
-		});
-
-		return message.reply(getLang("helpList", page, totalPage, textList));
+		return message.reply(
+			getLang("commandInfo",
+				cfg.name,
+				cfg.description?.en || cfg.description || "No description",
+				roleText,
+				cfg.version || "1.0",
+				cfg.author || "Unknown",
+				usage || "No usage guide"
+			)
+		);
 	}
 };
