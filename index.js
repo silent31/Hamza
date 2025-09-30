@@ -1,25 +1,17 @@
-/**
- * @author NTKhang
- * ! The source code is written by NTKhang, please don't change the author's name everywhere. Thank you for using
- * ! Official source code: https://github.com/ntkhang03/Goat-Bot-V2
- * ! If you do not download the source code from the above address, you are using an unknown version and at risk of having your account hacked
- *
- * English:
- * ! Please do not change the below code, it is very important for the project.
- * It is my motivation to maintain and develop the project for free.
- * ! If you change it, you will be banned forever
- * Thank you for using
- *
- * Vietnamese:
- * ! Vui lòng không thay đổi mã bên dưới, nó rất quan trọng đối với dự án.
- * Nó là động lực để tôi duy trì và phát triển dự án miễn phí.
- * ! Nếu thay đổi nó, bạn sẽ bị cấm vĩnh viễn
- * Cảm ơn bạn đã sử dụng
- */
+// main.js
+// Combined auto-restart + express server
 
 const { spawn } = require("child_process");
 const log = require("./logger/log.js");
+const express = require("express");
+const path = require("path");
 
+let restartCount = 0;
+const maxRestarts = 5;
+
+/**
+ * Start Goat.js with auto-restart logic
+ */
 function startProject() {
 	const child = spawn("node", ["Goat.js"], {
 		cwd: __dirname,
@@ -28,11 +20,44 @@ function startProject() {
 	});
 
 	child.on("close", (code) => {
-		if (code == 2) {
-			log.info("Restarting Project...");
-			startProject();
+		if (code === 2 && restartCount < maxRestarts) {
+			restartCount++;
+			log.info("RESTART", `Restarting Project... (${restartCount}/${maxRestarts})`);
+			setTimeout(startProject, 2000);
+		} else if (restartCount >= maxRestarts) {
+			log.err("RESTART", "Maximum restart attempts reached. Stopping...");
+			process.exit(1);
 		}
+	});
+
+	child.on("error", (err) => {
+		log.err("STARTUP", "Failed to start project:", err);
+		process.exit(1);
 	});
 }
 
+// Reset restart counter every 5 minutes
+setInterval(() => {
+	restartCount = 0;
+}, 300000);
+
 startProject();
+
+/**
+ * Express server setup
+ */
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, "public")));
+
+// Default route → index.html
+app.get("/", (req, res) => {
+	res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Start server
+app.listen(PORT, "0.0.0.0", () => {
+	log.info("SERVER", `Web server running at http://0.0.0.0:${PORT}`);
+});
