@@ -4,7 +4,7 @@ module.exports.config = {
     hasPermssion: 2,
     credits: "... - Long LTD",
     description: "War nát cái boxchat",
-    commandCategory: "group",
+    commandCategory: "fuck",
     usages: "bold war",
     cooldowns: 10,
     dependencies: {
