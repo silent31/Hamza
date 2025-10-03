@@ -19,15 +19,15 @@
     ]
   },
   "adminBot": [
-    "100071880593545",
+    "61577638905771",
     ""
   ],
   "DEV": [
-    "100071880593545",
+    "61577638905771",
     ""
   ],
   "GOD": [
-    "100071880593545",
+    "61577638905771",
     ""
   ],
   "whiteListMode": {
@@ -35,12 +35,12 @@
     "whiteListIds": [],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "Goat-Bot-V2",
+  "nickNameBot": "Marina x Kiran Bot",
   "prefix": "/",
   "autoSetNickname": true,
-  "authorFB": "https://www.facebook.com/100071880593545",
-  "authorName": "Aminul Sardar",
-  "authorEmail": "aminulsordar04@gmail.com",
+  "authorFB": "https://www.facebook.com/61577638905771",
+  "authorName": "Marinakhan",
+  "authorEmail": "MARINAKHAN384@GMAIL.COM",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
